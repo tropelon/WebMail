@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>কর্মী ইমেইল প্যানেল</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 24px;
+    }
+    .box {
+      max-width: 520px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 6px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    select, input, textarea, button {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    button {
+      margin-top: 16px;
+      background: #0b5ed7;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #094db1;
+    }
+    #status {
+      margin-top: 14px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>টিম ইমেইল সেন্ডার</h2>
+    <form id="emailForm">
+      <label for="sender">প্রেরক ঠিকানা (From)</label>
+      <select id="sender" name="sender" required>
+        <!-- নিচের ইমেইলগুলো আপনার Brevo-তে ভেরিফায়েড/তৈরিকৃত ইমেইল দিয়ে বদলে নিন -->
+        <option value="sales@example.com">Sales (sales@example.com)</option>
+        <option value="info@example.com">Info (info@example.com)</option>
+      </select>
+
+      <label for="senderName">প্রেরকের নাম (Sender Name)</label>
+      <input type="text" id="senderName" name="senderName" placeholder="যেমন: Sales Team" required />
+
+      <label for="to">প্রাপকের ইমেইল (To)</label>
+      <input type="email" id="to" name="to" placeholder="client@example.com" required />
+
+      <label for="subject">বিষয় (Subject)</label>
+      <input type="text" id="subject" name="subject" placeholder="ইমেইলের বিষয় লিখুন" required />
+
+      <label for="message">বার্তা (Message)</label>
+      <textarea id="message" name="message" placeholder="এখানে ইমেইলের মূল লেখা লিখুন..." required></textarea>
+
+      <button type="submit" id="sendBtn">ইমেইল পাঠান</button>
+    </form>
+    <div id="status"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
