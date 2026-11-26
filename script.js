@@ -1,49 +1,92 @@
-const ENDPOINT_URL = "https://YOUR-WORKER-SUBDOMAIN.workers.dev";
-​const ALLOWED_SENDERS = [
-"sales@troplon.2bd.net",
-"info@troplon.2bd.net",
-"contact@troplon.2bd.net",
-"no-reply@troplon.2bd.net"
-];
-​const form = document.getElementById("emailForm");
-const statusEl = document.getElementById("status");
-const sendBtn = document.getElementById("sendBtn");
-​form.addEventListener("submit", async (e) => {
-e.preventDefault();
-const sender = document.getElementById("sender").value.trim();
-const senderName = document.getElementById("senderName").value.trim();
-const to = document.getElementById("to").value.trim();
-const subject = document.getElementById("subject").value.trim();
-const message = document.getElementById("message").value.trim();
-​if (!ALLOWED_SENDERS.includes(sender)) {
-statusEl.style.color = "crimson";
-statusEl.textContent = "অননুমোদিত প্রেরক ঠিকানা নির্বাচন করা হয়েছে।";
-return;
-}
-​sendBtn.disabled = true;
-sendBtn.textContent = "পাঠানো হচ্ছে...";
-statusEl.style.color = "#333";
-statusEl.textContent = "";
-​try {
-const response = await fetch(ENDPOINT_URL, {
-method: "POST",
-headers: { "Content-Type": "application/json" },
-body: JSON.stringify({ sender, senderName, to, subject, message })
+const ENDPOINT_URL = "https://floral-block-864d.tropelon.workers.dev";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const form =
+    document.getElementById("teamEmailForm") ||
+    document.getElementById("emailForm") ||
+    document.querySelector("form");
+
+  if (!form) return;
+
+  const statusEl =
+    document.getElementById("statusMessage") ||
+    document.getElementById("status") ||
+    createStatusElement(form);
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const toInput =
+      form.querySelector('[name="to"]') ||
+      form.querySelector('[name="email"]') ||
+      document.getElementById("to") ||
+      document.getElementById("email");
+
+    const subjectInput =
+      form.querySelector('[name="subject"]') ||
+      document.getElementById("subject");
+
+    const messageInput =
+      form.querySelector('[name="message"]') ||
+      form.querySelector('[name="body"]') ||
+      form.querySelector("textarea") ||
+      document.getElementById("message");
+
+    const to = toInput ? toInput.value.trim() : "";
+    const subject = subjectInput ? subjectInput.value.trim() : "";
+    const message = messageInput ? messageInput.value.trim() : "";
+
+    if (!to || !subject || !message) {
+      showStatus(statusEl, "অনুগ্রহ করে প্রাপক, বিষয় এবং মেসেজ সবগুলো ঘর পূরণ করুন।", true);
+      return;
+    }
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+    showStatus(statusEl, "ইমেইল পাঠানো হচ্ছে...", false);
+
+    try {
+      const response = await fetch(ENDPOINT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to,
+          subject,
+          message,
+        }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok) {
+        showStatus(statusEl, "ইমেইল সফলভাবে পাঠানো হয়েছে!", false);
+        form.reset();
+      } else {
+        showStatus(
+          statusEl,
+          data.error || data.message || "ইমেইল পাঠানো যায়নি। আবার চেষ্টা করুন।",
+          true
+        );
+      }
+    } catch (error) {
+      showStatus(statusEl, "নেটওয়ার্ক বা সার্ভার সংযোগে সমস্যা হয়েছে।", true);
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  });
 });
-const result = await response.json();
-if (response.ok) {
-statusEl.style.color = "green";
-statusEl.textContent = "ইমেইল সফলভাবে পাঠানো হয়েছে!";
-form.reset();
-} else {
-statusEl.style.color = "crimson";
-statusEl.textContent = result.error || "ইমেইল পাঠানো যায়নি।";
+
+function createStatusElement(form) {
+  const div = document.createElement("div");
+  div.id = "statusMessage";
+  div.style.marginTop = "10px";
+  form.appendChild(div);
+  return div;
 }
-} catch (err) {
-statusEl.style.color = "crimson";
-statusEl.textContent = "নেটওয়ার্ক বা সার্ভার সংযোগে সমস্যা হয়েছে।";
-} finally {
-sendBtn.disabled = false;
-sendBtn.textContent = "ইমেইল পাঠান";
+
+function showStatus(el, text, isError) {
+  el.textContent = text;
+  el.style.color = isError ? "#d93025" : "#188038";
 }
-});
