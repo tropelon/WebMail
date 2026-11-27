@@ -34,8 +34,8 @@ jobs:
           MESSAGE: ${{ inputs.message }}
         run: |
           PAYLOAD=$(jq -n \
-            --arg sender_name "Your Name" \
-            --arg sender_email "your-verified-email@example.com" \
+            --arg sender_name "tropelon" \
+            --arg sender_email "sales@tropelon.2bd.net" \
             --arg to_email "$TO_EMAIL" \
             --arg to_name "$TO_NAME" \
             --arg subject "$SUBJECT" \
