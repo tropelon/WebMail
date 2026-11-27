@@ -1,0 +1,54 @@
+name: Manual Email Sender
+
+on:
+  workflow_dispatch:
+    inputs:
+      to_email:
+        description: 'প্রাপকের ইমেইল (Recipient Email)'
+        required: true
+        type: string
+      to_name:
+        description: 'প্রাপকের নাম (Recipient Name)'
+        required: false
+        default: 'User'
+        type: string
+      subject:
+        description: 'ইমেইলের বিষয় (Subject)'
+        required: true
+        type: string
+      message:
+        description: 'ইমেইলের মূল বার্তা (Message)'
+        required: true
+        type: string
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Email via Brevo
+        env:
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          TO_EMAIL: ${{ inputs.to_email }}
+          TO_NAME: ${{ inputs.to_name }}
+          SUBJECT: ${{ inputs.subject }}
+          MESSAGE: ${{ inputs.message }}
+        run: |
+          PAYLOAD=$(jq -n \
+            --arg sender_name "Your Name" \
+            --arg sender_email "your-verified-email@example.com" \
+            --arg to_email "$TO_EMAIL" \
+            --arg to_name "$TO_NAME" \
+            --arg subject "$SUBJECT" \
+            --arg message "$MESSAGE" \
+            '{
+              sender: { name: $sender_name, email: $sender_email },
+              to: [{ email: $to_email, name: $to_name }],
+              subject: $subject,
+              textContent: $message
+            }')
+
+          curl -sS -X POST "https://api.brevo.com/v3/smtp/email" \
+            -H "accept: application/json" \
+            -H "api-key: $BREVO_API_KEY" \
+            -H "content-type: application/json" \
+            -d "$PAYLOAD"
