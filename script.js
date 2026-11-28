@@ -1,5 +1,4 @@
 emailjs.init("e9st5T3Biwaiv-BZ1");
-const ENDPOINT_URL = "https://floral-block-864d.tropelon.workers.dev";
 
 document.addEventListener("DOMContentLoaded", () => {
   const form =
