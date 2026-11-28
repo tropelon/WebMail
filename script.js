@@ -46,30 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (submitBtn) submitBtn.disabled = true;
     showStatus(statusEl, "ইমেইল পাঠানো হচ্ছে...", false);
 
-    try {
-      const response = await fetch(ENDPOINT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          to,
-          subject,
-          message,
-        }),
-      });
-
-      const data = await response.json().catch(() => ({}));
-
-      if (response.ok) {
-        showStatus(statusEl, "ইমেইল সফলভাবে পাঠানো হয়েছে!", false);
-        form.reset();
-      } else {
-        showStatus(
-          statusEl,
-          data.error || data.message || "ইমেইল পাঠানো যায়নি। আবার চেষ্টা করুন।",
-          true
-        );
+    emailjs.send('smtp-relay.brevo.com', 'template_0ktelva', { to_email: to, subject: subject, message: message })
       }
     } catch (error) {
       showStatus(statusEl, "নেটওয়ার্ক বা সার্ভার সংযোগে সমস্যা হয়েছে।", true);
