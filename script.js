@@ -2,6 +2,7 @@ emailjs.init("e9st5T3Biwaiv-BZ1");
 
 document.addEventListener("DOMContentLoaded", () => {
   const form =
+    document.getElementById("contactForm") ||
     document.getElementById("teamEmailForm") ||
     document.getElementById("emailForm") ||
     document.querySelector("form");
@@ -15,6 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    const senderInput =
+      form.querySelector('[name="sender"]') ||
+      document.getElementById("sender");
+
+    const senderNameInput =
+      form.querySelector('[name="senderName"]') ||
+      document.getElementById("senderName");
 
     const toInput =
       form.querySelector('[name="to"]') ||
@@ -32,6 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
       form.querySelector("textarea") ||
       document.getElementById("message");
 
+    const sender = senderInput ? senderInput.value.trim() : "";
+    const senderName = senderNameInput ? senderNameInput.value.trim() : "";
     const to = toInput ? toInput.value.trim() : "";
     const subject = subjectInput ? subjectInput.value.trim() : "";
     const message = messageInput ? messageInput.value.trim() : "";
@@ -45,10 +56,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (submitBtn) submitBtn.disabled = true;
     showStatus(statusEl, "ইমেইল পাঠানো হচ্ছে...", false);
 
-    emailjs.send('service_3pzo2cy', 'template_0ktelva', { to_email: to, subject: subject, message: message })
-      }
+    try {
+      await emailjs.send("service_3pzo2cy", "template_0ktelva", {
+        from_email: sender,
+        from_name: senderName,
+        to_email: to,
+        subject: subject,
+        message: message,
+      });
+
+      showStatus(statusEl, "ইমেইল সফলভাবে পাঠানো হয়েছে!", false);
+      form.reset();
     } catch (error) {
-      showStatus(statusEl, "নেটওয়ার্ক বা সার্ভার সংযোগে সমস্যা হয়েছে।", true);
+      console.error("EmailJS Error:", error);
+      showStatus(statusEl, "ইমেইল পাঠাতে সমস্যা হয়েছে। কনসোল বা সেটিংস যাচাই করুন।", true);
     } finally {
       if (submitBtn) submitBtn.disabled = false;
     }
