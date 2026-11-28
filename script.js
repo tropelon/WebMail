@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (submitBtn) submitBtn.disabled = true;
     showStatus(statusEl, "ইমেইল পাঠানো হচ্ছে...", false);
 
-    emailjs.send('smtp-relay.brevo.com', 'template_0ktelva', { to_email: to, subject: subject, message: message })
+    emailjs.send('service_3pzo2cy', 'template_0ktelva', { to_email: to, subject: subject, message: message })
       }
     } catch (error) {
       showStatus(statusEl, "নেটওয়ার্ক বা সার্ভার সংযোগে সমস্যা হয়েছে।", true);
