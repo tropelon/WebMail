@@ -19,7 +19,8 @@ button:hover { background: #094db1; }
 <body>
 <div class="box">
 <h2>টিম ইমেইল সেন্ডার</h2>
-<form id="<form name="contact" method="POST" netlify>">
+<form id="contactForm" onsubmit="event.preventDefault();">
+
 <label for="sender">প্রেরক ঠিকানা (From)</label>
 <select id="sender" name="sender" required>
 <option value="sales@troplon.2bd.net">Sales (sales@troplon.2bd.net)</option>
